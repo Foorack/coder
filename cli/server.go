@@ -136,7 +136,7 @@ func createOIDCConfig(ctx context.Context, logger slog.Logger, vals *codersdk.De
 	// Use the configured OIDC redirect URL if provided, otherwise use the
 	// access URL with the callback path.
 	var redirectURL *url.URL
-	if vals.OIDC.RedirectURL.String() != "" {
+	if vals.OIDC.RedirectURL.Value() != nil {
 		redirectURL = vals.OIDC.RedirectURL.Value()
 	} else {
 		redirectURL, err = vals.AccessURL.Value().Parse("/api/v2/users/oidc/callback")
