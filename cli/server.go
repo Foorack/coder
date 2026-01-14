@@ -132,9 +132,17 @@ func createOIDCConfig(ctx context.Context, logger slog.Logger, vals *codersdk.De
 	if err != nil {
 		return nil, xerrors.Errorf("configure oidc provider: %w", err)
 	}
-	redirectURL, err := vals.AccessURL.Value().Parse("/api/v2/users/oidc/callback")
-	if err != nil {
-		return nil, xerrors.Errorf("parse oidc oauth callback url: %w", err)
+
+	// Use the configured OIDC redirect URL if provided, otherwise use the
+	// access URL with the callback path.
+	var redirectURL *url.URL
+	if vals.OIDC.RedirectURL.String() != "" {
+		redirectURL = vals.OIDC.RedirectURL.Value()
+	} else {
+		redirectURL, err = vals.AccessURL.Value().Parse("/api/v2/users/oidc/callback")
+		if err != nil {
+			return nil, xerrors.Errorf("parse oidc oauth callback url: %w", err)
+		}
 	}
 	// If the scopes contain 'groups', we enable group support.
 	// Do not override any custom value set by the user.

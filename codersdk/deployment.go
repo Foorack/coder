@@ -661,6 +661,7 @@ type OIDCConfig struct {
 	ClientCertFile      serpent.String                    `json:"client_cert_file" typescript:",notnull"`
 	EmailDomain         serpent.StringArray               `json:"email_domain" typescript:",notnull"`
 	IssuerURL           serpent.String                    `json:"issuer_url" typescript:",notnull"`
+	RedirectURL         serpent.URL                       `json:"redirect_url" typescript:",notnull"`
 	Scopes              serpent.StringArray               `json:"scopes" typescript:",notnull"`
 	IgnoreEmailVerified serpent.Bool                      `json:"ignore_email_verified" typescript:",notnull"`
 	UsernameField       serpent.String                    `json:"username_field" typescript:",notnull"`
@@ -1974,6 +1975,15 @@ func (c *DeploymentValues) Options() serpent.OptionSet {
 			Value:       &c.OIDC.IssuerURL,
 			Group:       &deploymentGroupOIDC,
 			YAML:        "issuerURL",
+		},
+		{
+			Name:        "OIDC Redirect URL",
+			Description: "Redirect URL to use for OIDC callback. If not specified, the access URL with the /api/v2/users/oidc/callback path will be used.",
+			Flag:        "oidc-redirect-url",
+			Env:         "CODER_OIDC_REDIRECT_URL",
+			Value:       &c.OIDC.RedirectURL,
+			Group:       &deploymentGroupOIDC,
+			YAML:        "redirectURL",
 		},
 		{
 			Name:        "OIDC Scopes",
